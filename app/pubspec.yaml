@@ -1,0 +1,14 @@
+name: hospitallers_feedback_forms
+description: A console app for creating feedback Google forms for Hospitallers courses.
+version: 1.0.0
+# repository: 
+
+environment:
+  sdk: ^3.4.3
+
+dependencies:
+  googleapis_auth: ^1.6.0
+  googleapis: ^13.2.0
+
+dev_dependencies:
+  lints: ^4.0.0
