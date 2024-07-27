@@ -24,7 +24,8 @@ Future<void> main() async {
 	final files = DriveApi(client).files;
 	final forms = FormsApi(client).forms;
 
-	await createFolder(files);
+	final folderId = await createFolder(files);
+	await createForms(courses, files, forms, folderId);
 
 	client.close();
 }

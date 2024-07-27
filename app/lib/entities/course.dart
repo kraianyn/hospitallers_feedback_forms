@@ -1,3 +1,5 @@
+import 'package:hospitallers_feedback_forms/private.dart';
+
 import 'instructor.dart';
 
 class Course {
@@ -39,38 +41,45 @@ enum CourseType {
 	basicLifeSupport(
 		name: "Базова підтримка життя",
 		shortName: "BLS",
-		isMilitary: false
+		isMilitary: false,
+		templateFileId: basicLifeSupportTemplateFileId
 	),
 	basicTraumaCare(
 		name: "Перша допомога при травмі",
 		shortName: "Травма",
-		isMilitary: false
+		isMilitary: false,
+		templateFileId: basicTraumaCareTemplateFileId
 	),
 	simulations(
 		name: "Симуляційний курс",
 		shortName: "Симуляції",
-		isMilitary: false
+		isMilitary: false,
+		templateFileId: simulationsTemplateFileId
 	),
 	spinalInjuryCare(
 		name: "Перша допомога при травмі хребта",
 		shortName: "Травма хребта",
-		isMilitary: false
+		isMilitary: false,
+		templateFileId: spinalInjuryCareTemplateFileId
 	),
 	tcccAsm1(
 		name: "TCCC ASM (1 день)",
 		shortName: "ASM 1",
-		isMilitary: true
+		isMilitary: true,
+		templateFileId: tcccAsm1TemplateFileId
 	),
 	tcccAsm3(
 		name: "TCCC ASM (3 дні)",
 		shortName: "ASM 3",
-		isMilitary: true
+		isMilitary: true,
+		templateFileId: tcccAsm3TemplateFileId
 	);
 
 	const CourseType({
 		required this.name,
 		required this.shortName,
-		required this.isMilitary
+		required this.isMilitary,
+		required this.templateFileId
 	});
 
 	factory CourseType.fromString(String string) => CourseType.values.firstWhere(
@@ -80,4 +89,5 @@ enum CourseType {
 	final String name;
 	final String shortName;
 	final bool isMilitary;
+	final String templateFileId;
 }
