@@ -3,10 +3,11 @@ import 'dart:io';
 
 import 'package:googleapis/drive/v3.dart';
 import 'package:googleapis/forms/v1.dart';
-import 'package:hospitallers_feedback_forms/entities/instructor.dart';
 
 import 'private.dart';
 import 'entities/course.dart';
+import 'entities/instructor.dart';
+import 'entities/grammatical_case.dart';
 
 
 Future<String> createFolder(FilesResource files) async {
@@ -70,6 +71,7 @@ Future<void> _addInstructorsToForm(
 			for (final (index, instructor) in course.instructors.indexed)
 				..._instructorQuestionRequests(
 					instructor,
+					course.type.isMilitary,
 					previousQuestionCount + instructorQuestionCount * index
 				)
 		]),
@@ -77,9 +79,9 @@ Future<void> _addInstructorsToForm(
 	);
 }
 
-List<Request> _instructorQuestionRequests(Instructor instructor, int locationIndex) {
-	final instructorInGenitive = instructor.codeName.inGenitive;
-	final instructorInAccusative = instructor.codeName.inAccusative;
+List<Request> _instructorQuestionRequests(Instructor instructor, bool useCodeName, int locationIndex) {
+	final instructorInGenitive = _instructorString(instructor, useCodeName, GrammaticalCase.genitive);
+	final instructorInAccusative = _instructorString(instructor, useCodeName, GrammaticalCase.accusative);
 
 	return [
 		_createQuestionRequest(
@@ -114,3 +116,13 @@ Request _createQuestionRequest({
 		location: Location(index: locationIndex)
 	)
 );
+
+String _instructorString(
+	Instructor instructor,
+	bool useCodeName,
+	GrammaticalCase grammaticalCase
+) {
+	final codeName = instructor.codeName[grammaticalCase];
+	final firstName = instructor.firstName[grammaticalCase];
+	return useCodeName ? codeName : "$firstName ($codeName)";
+}

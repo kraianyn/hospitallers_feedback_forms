@@ -1,3 +1,6 @@
+import 'grammatical_case.dart';
+
+
 enum Instructor {
 	bas(
 		codeName: InstructorName.bas,
@@ -91,4 +94,10 @@ enum InstructorName {
 	final String inNominative;
 	final String inAccusative;
 	final String inGenitive;
+
+	String operator [](GrammaticalCase grammaticalCase) => switch (grammaticalCase) {
+		GrammaticalCase.nominative => inNominative,
+		GrammaticalCase.accusative => inAccusative,
+		GrammaticalCase.genitive => inGenitive,
+	};
 }
