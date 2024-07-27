@@ -4,8 +4,9 @@ import 'package:googleapis_auth/auth_io.dart';
 import 'package:googleapis/drive/v3.dart';
 import 'package:googleapis/forms/v1.dart';
 
-import 'package:hospitallers_feedback_forms/auth_client_id.dart';
+import 'package:hospitallers_feedback_forms/cloud.dart';
 import 'package:hospitallers_feedback_forms/course.dart';
+import 'package:hospitallers_feedback_forms/private.dart';
 
 
 Future<void> main() async {
@@ -15,10 +16,14 @@ Future<void> main() async {
 	print("Ідентифіковано ${courseStrings.length} курсів\n");
 
 	final client = await clientViaUserConsent(
-		clientId,
+		authClientId,
 		[DriveApi.driveScope],
 		(url) => print("Автентифікація за посиланням:\n$url\n")
 	);
 	final files = DriveApi(client).files;
 	final forms = FormsApi(client).forms;
+
+	await createFolder(files);
+
+	client.close();
 }
