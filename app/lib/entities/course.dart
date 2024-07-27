@@ -29,7 +29,7 @@ class Course {
 			return (type, metadata, instructors);
 		}
 		on StateError {
-			throw "Invalid format: \"$line\"";
+			throw "Хибний формат: \"$line\"";
 		}
 	}
 

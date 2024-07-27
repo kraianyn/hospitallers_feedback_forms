@@ -44,7 +44,8 @@ Future<void> _createForm(
 	FilesResource files,
 	FormsResource forms
 ) async {
-	await _copyFormTemplate(course, folderId, files);
+	final form = await _copyFormTemplate(course, folderId, files);
+	await _addInstructorsToForm(form.id!, course, forms);
 	print("Форму створено: $course");
 }
 
@@ -54,5 +55,41 @@ Future<File> _copyFormTemplate(Course course, String folderId, FilesResource fil
 		File(name: fileName, parents: [folderId]),
 		course.type.templateFileId,
 		$fields: 'id'
+	);
+}
+
+Future<void> _addInstructorsToForm(
+	String formId,
+	Course course,
+	FormsResource forms
+) async {
+	int locationIndex = 2;
+	await forms.batchUpdate(
+		BatchUpdateFormRequest(requests: [
+			for (final instructor in course.instructors)
+				...[
+					Request(createItem: CreateItemRequest(
+						item: Item(
+							title: "Що ви можете сказати про викладання ${instructor.codeName.inGenitive}?",
+							questionItem: QuestionItem(question: Question(
+								textQuestion: TextQuestion(paragraph: false),
+								required: true
+							))
+						),
+						location: Location(index: locationIndex++)
+					)),
+					Request(createItem: CreateItemRequest(
+						item: Item(
+							title: "Як ви оціните ${instructor.codeName.inAccusative}?",
+							questionItem: QuestionItem(question: Question(
+								scaleQuestion: ScaleQuestion(low: 1, high: 5),
+								required: true
+							))
+						),
+						location: Location(index: locationIndex++)
+					))
+				]
+		]),
+		formId
 	);
 }
