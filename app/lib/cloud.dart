@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:googleapis/drive/v3.dart';
 import 'package:googleapis/forms/v1.dart';
+import 'package:hospitallers_feedback_forms/entities/instructor.dart';
 
 import 'private.dart';
 import 'entities/course.dart';
@@ -63,33 +64,53 @@ Future<void> _addInstructorsToForm(
 	Course course,
 	FormsResource forms
 ) async {
-	int locationIndex = 2;
+	const previousQuestionCount = 2, instructorQuestionCount = 2;
 	await forms.batchUpdate(
 		BatchUpdateFormRequest(requests: [
-			for (final instructor in course.instructors)
-				...[
-					Request(createItem: CreateItemRequest(
-						item: Item(
-							title: "Що ви можете сказати про викладання ${instructor.codeName.inGenitive}?",
-							questionItem: QuestionItem(question: Question(
-								textQuestion: TextQuestion(paragraph: false),
-								required: true
-							))
-						),
-						location: Location(index: locationIndex++)
-					)),
-					Request(createItem: CreateItemRequest(
-						item: Item(
-							title: "Як ви оціните ${instructor.codeName.inAccusative}?",
-							questionItem: QuestionItem(question: Question(
-								scaleQuestion: ScaleQuestion(low: 1, high: 5),
-								required: true
-							))
-						),
-						location: Location(index: locationIndex++)
-					))
-				]
+			for (final (index, instructor) in course.instructors.indexed)
+				..._instructorQuestionRequests(
+					instructor,
+					previousQuestionCount + instructorQuestionCount * index
+				)
 		]),
 		formId
 	);
 }
+
+List<Request> _instructorQuestionRequests(Instructor instructor, int locationIndex) {
+	final instructorInGenitive = instructor.codeName.inGenitive;
+	final instructorInAccusative = instructor.codeName.inAccusative;
+
+	return [
+		_createQuestionRequest(
+			title: "Що ви можете сказати про викладання $instructorInGenitive?",
+			question: Question(
+				textQuestion: TextQuestion(paragraph: false),
+				required: true
+			),
+			locationIndex: locationIndex++
+		),
+		_createQuestionRequest(
+			title: "Як ви оціните $instructorInAccusative?",
+			question: Question(
+				scaleQuestion: ScaleQuestion(low: 1, high: 5),
+				required: true
+			),
+			locationIndex: locationIndex++
+		)
+	];
+}
+
+Request _createQuestionRequest({
+	required String title,
+	required Question question,
+	required int locationIndex
+}) => Request(
+	createItem: CreateItemRequest(
+		item: Item(
+			title: title,
+			questionItem: QuestionItem(question: question)
+		),
+		location: Location(index: locationIndex)
+	)
+);
