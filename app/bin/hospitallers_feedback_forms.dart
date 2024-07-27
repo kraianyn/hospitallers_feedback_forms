@@ -5,8 +5,9 @@ import 'package:googleapis/drive/v3.dart';
 import 'package:googleapis/forms/v1.dart';
 
 import 'package:hospitallers_feedback_forms/cloud.dart';
-import 'package:hospitallers_feedback_forms/course.dart';
 import 'package:hospitallers_feedback_forms/private.dart';
+
+import 'package:hospitallers_feedback_forms/entities/course.dart';
 
 
 Future<void> main() async {
