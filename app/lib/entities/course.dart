@@ -1,6 +1,6 @@
-import 'package:hospitallers_feedback_forms/private.dart';
-
+import '../private.dart';
 import 'instructor.dart';
+
 
 class Course {
 	const Course({
@@ -9,14 +9,14 @@ class Course {
 		required this.instructors
 	});
 
-	final CourseType type;
-	final String metadata;
-	final List<Instructor> instructors;
-
 	factory Course.fromFileFormat(String line) {
 		final (type, metadata, instructors) = _parseFileLine(line);
 		return Course(type: type, metadata: metadata, instructors: instructors);
 	}
+
+	final CourseType type;
+	final String metadata;
+	final List<Instructor> instructors;
 
 	static (CourseType, String, List<Instructor>) _parseFileLine(String line) {
 		try {

@@ -12,9 +12,8 @@ import 'package:hospitallers_feedback_forms/entities/course.dart';
 
 Future<void> main() async {
 	final courseStrings = io.File('courses.txt').readAsLinesSync()..removeWhere((s) => s.isEmpty);
-	final courses = courseStrings.map(Course.fromFileFormat);
-
-	print("Ідентифіковано ${courseStrings.length} курсів\n");
+	final courses = courseStrings.map(Course.fromFileFormat).toList();
+	print("Ідентифіковано ${courses.length} курсів\n");
 
 	final client = await clientViaUserConsent(
 		authClientId,
@@ -25,6 +24,8 @@ Future<void> main() async {
 	final forms = FormsApi(client).forms;
 
 	final folderId = await createFolder(files);
+
+	print("Теку створено, форми створюються\n");
 	await createForms(courses, files, forms, folderId);
 
 	client.close();

@@ -23,11 +23,10 @@ Future<String> createFolder(FilesResource files) async {
 		),
 		$fields: 'id'
 	);
-
 	return folder.id!;
 }
 
-// do: define a class `CreatedForm` to avoid repassing arguments
+// do: define a `CreatedForm` class to avoid repassing arguments
 Future<void> createForms(
 	Iterable<Course> courses,
 	FilesResource files,
