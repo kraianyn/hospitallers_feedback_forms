@@ -1,32 +1,22 @@
-import 'dart:io' as io;
-
-import 'package:googleapis_auth/auth_io.dart';
 import 'package:googleapis/drive/v3.dart';
 import 'package:googleapis/forms/v1.dart';
 
 import 'package:hospitallers_feedback_forms/cloud.dart';
-import 'package:hospitallers_feedback_forms/private.dart';
-
-import 'package:hospitallers_feedback_forms/entities/course.dart';
+import 'package:hospitallers_feedback_forms/courses.dart';
 
 
 Future<void> main() async {
-	final courseStrings = io.File('courses.txt').readAsLinesSync()..removeWhere((s) => s.isEmpty);
-	final courses = courseStrings.map(Course.fromFileFormat).toList();
+	final courses = readCourses();
 	print("Ідентифіковано ${courses.length} курсів\n");
 
-	final client = await clientViaUserConsent(
-		authClientId,
-		[DriveApi.driveScope],
-		(url) => print("Автентифікація за посиланням:\n$url\n")
-	);
+	final client = await authClient();
 	final files = DriveApi(client).files;
 	final forms = FormsApi(client).forms;
 
 	final folderId = await createFolder(files);
-
 	print("Теку створено, форми створюються\n");
-	await createForms(courses, files, forms, folderId);
 
+	await createForms(courses, folderId, files, forms);
 	client.close();
+	print("\nФорми створено");
 }
