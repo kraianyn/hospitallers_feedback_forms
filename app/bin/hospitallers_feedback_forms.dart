@@ -16,7 +16,9 @@ Future<void> main() async {
 	final folderId = await createFolder(files);
 	print("Теку створено, форми створюються\n");
 
-	await createForms(courses, folderId, files, forms);
+	final courseForms = await createForms(courses, folderId, files, forms);
 	client.close();
-	print("\nФорми створено");
+
+	await writeFormLinks(courseForms);
+	print("\nПосилання на форми записано до файлу");
 }

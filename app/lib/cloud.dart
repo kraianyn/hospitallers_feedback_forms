@@ -32,17 +32,18 @@ Future<String> createFolder(FilesResource files) async {
 	return folder.id!;
 }
 
-Future<List<File>> createForms(
+Future<List<CourseForm>> createForms(
 	List<Course> courses,
 	String folderId,
 	FilesResource files,
 	FormsResource forms
 ) async {
-	final courseFormFutures = courses.map((course) => CourseForm(
+	final courseForms = courses.map((course) => CourseForm(
 		course: course,
 		folderId: folderId,
 		files: files,
 		forms: forms
-	).create());
-	return Future.wait(courseFormFutures);
+	)).toList();
+	await Future.wait(courseForms.map((f) => f.create()));
+	return courseForms;
 }

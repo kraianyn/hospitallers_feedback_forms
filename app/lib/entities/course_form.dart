@@ -7,7 +7,7 @@ import 'instructor.dart';
 
 
 class CourseForm {
-	const CourseForm({
+	CourseForm({
 		required this.course,
 		required this.folderId,
 		required this.files,
@@ -16,17 +16,18 @@ class CourseForm {
 
 	final Course course;
 	final String folderId;
+	late final String link;
 	final FilesResource files;
 	final FormsResource forms;
 
-	Future<File> create() async {
-		final form = await _copyFormTemplate();
-		await _addInstructorsToForm(form.id!);
+	Future<void> create() async {
+		final formFile = await _copyTemplate();
+		final form = await _addInstructors(formFile.id!);
+		link = form.responderUri!;
 		print("Форму створено: $course");
-		return form;
 	}
 
-	Future<File> _copyFormTemplate() {
+	Future<File> _copyTemplate() {
 		final fileName = "${course.type.shortName} (${course.metadata})";
 		return files.copy(
 			File(name: fileName, parents: [folderId]),
@@ -35,18 +36,22 @@ class CourseForm {
 		);
 	}
 
-	Future<void> _addInstructorsToForm(String formId) async {
+	Future<Form> _addInstructors(String formId) async {
 		const previousQuestionCount = 2, instructorQuestionCount = 2;
-		await forms.batchUpdate(
-			BatchUpdateFormRequest(requests: [
-				for (final (index, instructor) in course.instructors.indexed)
-					..._instructorQuestionRequests(
-						instructor,
-						previousQuestionCount + instructorQuestionCount * index
-					)
-			]),
+		final response = await forms.batchUpdate(
+			BatchUpdateFormRequest(
+				includeFormInResponse: true,
+				requests: [
+					for (final (index, instructor) in course.instructors.indexed)
+						..._instructorQuestionRequests(
+							instructor,
+							previousQuestionCount + instructorQuestionCount * index
+						)
+				]
+			),
 			formId
 		);
+		return response.form!;
 	}
 
 	List<Request> _instructorQuestionRequests(Instructor instructor, int locationIndex) {

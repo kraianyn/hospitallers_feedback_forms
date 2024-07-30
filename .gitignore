@@ -1,6 +1,7 @@
 app/lib/private.dart
 
 courses.txt
+links.txt
 
 # Dart
 app/analysis_options.yaml
