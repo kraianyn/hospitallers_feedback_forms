@@ -16,12 +16,12 @@ Future<AutoRefreshingAuthClient> authClient() => clientViaUserConsent(
 	(url) => print("Автентифікація за посиланням:\n$url\n")
 );
 
-Future<String> createFolder(FilesResource files) async {
+Future<String> createFolder(FilesResource filesResource) async {
 	print("Як назвати теку?");
 	final name = stdin.readLineSync(encoding: utf8);
 	print('');
 
-	final folder = await files.create(
+	final folder = await filesResource.create(
 		File(
 			name: name,
 			mimeType: 'application/vnd.google-apps.folder',
@@ -35,14 +35,14 @@ Future<String> createFolder(FilesResource files) async {
 Future<List<CourseForm>> createForms(
 	List<Course> courses,
 	String folderId,
-	FilesResource files,
-	FormsResource forms
+	FilesResource filesResource,
+	FormsResource formsResource
 ) async {
 	final courseForms = courses.map((course) => CourseForm(
 		course: course,
 		folderId: folderId,
-		files: files,
-		forms: forms
+		filesResource: filesResource,
+		formsResource: formsResource
 	)).toList();
 	await Future.wait(courseForms.map((f) => f.create()));
 	return courseForms;

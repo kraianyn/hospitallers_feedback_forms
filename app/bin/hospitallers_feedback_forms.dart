@@ -10,15 +10,15 @@ Future<void> main() async {
 	print("Ідентифіковано ${courses.length} курсів\n");
 
 	final client = await authClient();
-	final files = DriveApi(client).files;
-	final forms = FormsApi(client).forms;
+	final filesResource = DriveApi(client).files;
+	final formsResource = FormsApi(client).forms;
 
-	final folderId = await createFolder(files);
+	final folderId = await createFolder(filesResource);
 	print("Теку створено, форми створюються\n");
 
-	final courseForms = await createForms(courses, folderId, files, forms);
+	final forms = await createForms(courses, folderId, filesResource, formsResource);
 	client.close();
 
-	await writeFormLinks(courseForms);
+	await writeFormLinks(forms);
 	print("\nПосилання на форми записано до файлу");
 }

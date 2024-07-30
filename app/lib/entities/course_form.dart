@@ -10,15 +10,15 @@ class CourseForm {
 	CourseForm({
 		required this.course,
 		required this.folderId,
-		required this.files,
-		required this.forms
+		required this.filesResource,
+		required this.formsResource
 	});
 
 	final Course course;
 	final String folderId;
 	late final String link;
-	final FilesResource files;
-	final FormsResource forms;
+	final FilesResource filesResource;
+	final FormsResource formsResource;
 
 	Future<void> create() async {
 		final formFile = await _copyTemplate();
@@ -29,7 +29,7 @@ class CourseForm {
 
 	Future<File> _copyTemplate() {
 		final fileName = "${course.type.shortName} (${course.metadata})";
-		return files.copy(
+		return filesResource.copy(
 			File(name: fileName, parents: [folderId]),
 			course.type.templateFileId,
 			$fields: 'id'
@@ -38,7 +38,7 @@ class CourseForm {
 
 	Future<Form> _addInstructors(String formId) async {
 		const previousQuestionCount = 2, instructorQuestionCount = 2;
-		final response = await forms.batchUpdate(
+		final response = await formsResource.batchUpdate(
 			BatchUpdateFormRequest(
 				includeFormInResponse: true,
 				requests: [
