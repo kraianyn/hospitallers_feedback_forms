@@ -3,6 +3,8 @@ app/lib/private.dart
 courses.txt
 links.txt
 
+*.exe
+
 # Dart
 app/analysis_options.yaml
 app/.dart_tool/
