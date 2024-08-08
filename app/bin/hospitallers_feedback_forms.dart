@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:googleapis/drive/v3.dart';
 import 'package:googleapis/forms/v1.dart';
 
@@ -21,4 +23,5 @@ Future<void> main() async {
 
 	await writeFormLinks(forms);
 	print("\nПосилання на форми записано до файлу");
+	stdin.readByteSync();
 }
